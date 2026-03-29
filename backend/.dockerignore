@@ -1,0 +1,12 @@
+# Go
+*.test
+*.out
+vendor/
+
+# IDE
+.idea/
+.vscode/
+
+# Docker
+Dockerfile
+docker-compose.yml

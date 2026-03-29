@@ -1,0 +1,291 @@
+---
+import '../styles/global.css';
+---
+
+<html lang="zh-CN" class="dark">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="description" content="GeniusGen - 智能图表生成器，AI 驱动的 Mermaid 在线图表创作工具" />
+		<title>GeniusGen - 智能图表生成器</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+	</head>
+	<body class="font-['Inter'] bg-primary">
+		<header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b border-custom transition-colors" style="background-color: rgba(255,255,255,0.8);">
+			<nav class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+				<a href="/" class="flex items-center gap-3">
+					<div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background-color: #EE4D2D;">
+						<svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+							<path stroke-linecap="round" stroke-linejoin="round" d="M12 2L2 7l10 5 10-5-10-5z"/>
+							<path stroke-linecap="round" stroke-linejoin="round" d="M2 17l10 5 10-5"/>
+							<path stroke-linecap="round" stroke-linejoin="round" d="M2 12l10 5 10-5"/>
+						</svg>
+					</div>
+					<span class="text-lg font-bold text-primary">GeniusGen</span>
+				</a>
+				<div class="hidden md:flex items-center gap-8 text-sm text-secondary">
+					<a href="#demo" class="hover:text-[#EE4D2D] transition-colors">演示</a>
+					<a href="#diagrams" class="hover:text-[#EE4D2D] transition-colors">图表类型</a>
+					<a href="https://mermaid.js.org/intro/" target="_blank" class="hover:text-[#EE4D2D] transition-colors">语法文档</a>
+				</div>
+				<div class="flex items-center gap-3">
+					<button id="theme-toggle" class="w-9 h-9 rounded-lg flex items-center justify-center transition-colors hover-bg" title="切换主题">
+						<svg id="sun-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+						</svg>
+						<svg id="moon-icon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+						</svg>
+					</button>
+					<a href="http://localhost:5173" class="px-5 py-2 text-white text-sm font-medium rounded-lg transition-colors" style="background-color: #EE4D2D;">
+						开始使用
+					</a>
+				</div>
+			</nav>
+		</header>
+
+		<main>
+			<section class="pt-32 pb-20 px-6">
+				<div class="max-w-5xl mx-auto text-center">
+					<div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm mb-8 code-bg">
+						<span class="w-2 h-2 rounded-full animate-pulse" style="background-color: #22c55e;"></span>
+						<span class="text-secondary">AI 驱动的智能图表生成</span>
+					</div>
+					<h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight text-primary">
+						用文字描述<br class="md:hidden" />
+						<span style="color: #EE4D2D;">生成专业图表</span>
+					</h1>
+					<p class="text-lg max-w-2xl mx-auto mb-10 text-secondary">
+						告别繁琐的图表绘制工作。输入自然语言描述，AI 即可生成精美的 Mermaid 图表，支持流程图、时序图、ER图等多种类型。
+					</p>
+					<div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+						<a href="http://localhost:5173" class="px-8 py-3.5 text-white font-semibold rounded-lg transition-colors" style="background-color: #EE4D2D;">
+							免费开始使用
+						</a>
+						<a href="#demo" class="px-8 py-3.5 border font-medium rounded-lg transition-colors hover:border-[#EE4D2D] border-custom text-primary">
+							查看在线演示
+						</a>
+					</div>
+				</div>
+			</section>
+
+			<section id="demo" class="py-16 px-6">
+				<div class="max-w-6xl mx-auto">
+					<div class="text-center mb-12">
+						<h2 class="text-3xl md:text-4xl font-bold mb-4 text-primary">在线编辑器</h2>
+						<p class="text-secondary">实时预览，所见即所得</p>
+					</div>
+					<div class="rounded-2xl overflow-hidden border shadow-2xl bg-card border-custom">
+						<div class="flex items-center gap-2 px-4 py-3 border-b border-custom code-bg">
+							<div class="w-3 h-3 rounded-full" style="background-color: rgba(239,68,68,0.8);"></div>
+							<div class="w-3 h-3 rounded-full" style="background-color: rgba(234,179,8,0.8);"></div>
+							<div class="w-3 h-3 rounded-full" style="background-color: rgba(34,197,94,0.8);"></div>
+							<span class="ml-4 text-xs text-secondary">GeniusGen Editor</span>
+						</div>
+						<div class="grid lg:grid-cols-2 min-h-[400px]">
+							<div class="p-6 border-b lg:border-b-0 lg:border-r border-custom">
+								<div class="flex items-center gap-2 mb-4">
+									<div class="w-2 h-2 rounded-full" style="background-color: #EE4D2D;"></div>
+									<span class="text-xs text-secondary uppercase tracking-wider">Mermaid 代码</span>
+								</div>
+								<pre id="code-display" class="text-sm font-mono text-secondary leading-relaxed"></pre>
+							</div>
+							<div class="p-6 code-bg">
+								<div class="flex items-center gap-2 mb-4">
+									<div class="w-2 h-2 rounded-full" style="background-color: #22c55e;"></div>
+									<span class="text-xs text-secondary uppercase tracking-wider">实时预览</span>
+								</div>
+								<div id="preview-display" class="flex items-center justify-center h-full"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section id="diagrams" class="py-20 px-6 bg-secondary">
+				<div class="max-w-6xl mx-auto">
+					<div class="text-center mb-16">
+						<h2 class="text-3xl md:text-4xl font-bold mb-4 text-primary">支持的图表类型</h2>
+						<p class="text-secondary">丰富的图表类型，满足各种可视化需求</p>
+					</div>
+					<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+						<div class="rounded-xl p-6 border border-custom hover:border-[#EE4D2D]/50 transition-colors group bg-card">
+							<div class="w-12 h-12 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform" style="background-color: rgba(238,77,45,0.1);">
+								<svg class="w-6 h-6" style="color: #EE4D2D;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/>
+								</svg>
+							</div>
+							<h3 class="text-lg font-semibold mb-2 text-primary">流程图</h3>
+							<p class="text-sm mb-4 text-secondary">展示业务流程、决策逻辑和系统架构</p>
+							<div class="text-xs font-mono rounded p-2 code-bg text-secondary">
+								flowchart TD
+							</div>
+						</div>
+
+						<div class="rounded-xl p-6 border border-custom hover:border-purple-500/50 transition-colors group bg-card">
+							<div class="w-12 h-12 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform" style="background-color: rgba(168,85,247,0.1);">
+								<svg class="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+								</svg>
+							</div>
+							<h3 class="text-lg font-semibold mb-2 text-primary">时序图</h3>
+							<p class="text-sm mb-4 text-secondary">描述系统组件间的交互顺序</p>
+							<div class="text-xs font-mono rounded p-2 code-bg text-secondary">
+								sequenceDiagram
+							</div>
+						</div>
+
+						<div class="rounded-xl p-6 border border-custom hover:border-blue-500/50 transition-colors group bg-card">
+							<div class="w-12 h-12 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform" style="background-color: rgba(59,130,246,0.1);">
+								<svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/>
+								</svg>
+							</div>
+							<h3 class="text-lg font-semibold mb-2 text-primary">ER 图</h3>
+							<p class="text-sm mb-4 text-secondary">数据库实体关系可视化设计</p>
+							<div class="text-xs font-mono rounded p-2 code-bg text-secondary">
+								erDiagram
+							</div>
+						</div>
+
+						<div class="rounded-xl p-6 border border-custom hover:border-green-500/50 transition-colors group bg-card">
+							<div class="w-12 h-12 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform" style="background-color: rgba(34,197,94,0.1);">
+								<svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+								</svg>
+							</div>
+							<h3 class="text-lg font-semibold mb-2 text-primary">类图</h3>
+							<p class="text-sm mb-4 text-secondary">面向对象编程的类结构展示</p>
+							<div class="text-xs font-mono rounded p-2 code-bg text-secondary">
+								classDiagram
+							</div>
+						</div>
+
+						<div class="rounded-xl p-6 border border-custom hover:border-orange-500/50 transition-colors group bg-card">
+							<div class="w-12 h-12 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform" style="background-color: rgba(249,115,22,0.1);">
+								<svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+								</svg>
+							</div>
+							<h3 class="text-lg font-semibold mb-2 text-primary">状态图</h3>
+							<p class="text-sm mb-4 text-secondary">状态机和工作流可视化</p>
+							<div class="text-xs font-mono rounded p-2 code-bg text-secondary">
+								stateDiagram-v2
+							</div>
+						</div>
+
+						<div class="rounded-xl p-6 border border-custom hover:border-pink-500/50 transition-colors group bg-card">
+							<div class="w-12 h-12 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform" style="background-color: rgba(236,72,153,0.1);">
+								<svg class="w-6 h-6 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/>
+								</svg>
+							</div>
+							<h3 class="text-lg font-semibold mb-2 text-primary">饼图</h3>
+							<p class="text-sm mb-4 text-secondary">数据占比和统计分布展示</p>
+							<div class="text-xs font-mono rounded p-2 code-bg text-secondary">
+								pie
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section class="py-20 px-6">
+				<div class="max-w-4xl mx-auto text-center">
+					<h2 class="text-3xl md:text-4xl font-bold mb-6 text-primary">开始创作</h2>
+					<p class="mb-10 text-secondary">免费使用，无需注册</p>
+					<a href="http://localhost:5173" class="inline-block px-10 py-4 text-white font-semibold rounded-lg transition-colors text-lg" style="background-color: #EE4D2D;">
+						立即开始
+					</a>
+				</div>
+			</section>
+		</main>
+
+		<footer class="border-t py-8 px-6 border-custom">
+			<div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-secondary">
+				<div class="flex items-center gap-2">
+					<div class="w-6 h-6 rounded flex items-center justify-center" style="background-color: #EE4D2D;">
+						<svg class="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+							<path stroke-linecap="round" stroke-linejoin="round" d="M12 2L2 7l10 5 10-5-10-5z"/>
+						</svg>
+					</div>
+					<span class="font-medium text-primary">GeniusGen</span>
+				</div>
+				<p>Built with Mermaid.js</p>
+				<p>© 2024 GeniusGen</p>
+			</div>
+		</footer>
+
+		<script is:inline>
+			(function() {
+				var html = document.documentElement;
+				var sunIcon = document.getElementById('sun-icon');
+				var moonIcon = document.getElementById('moon-icon');
+				var themeToggle = document.getElementById('theme-toggle');
+
+				function updateTheme(dark) {
+					if (dark) {
+						html.classList.add('dark');
+						html.classList.remove('light');
+						sunIcon.style.display = 'none';
+						moonIcon.style.display = 'block';
+					} else {
+						html.classList.remove('dark');
+						html.classList.add('light');
+						sunIcon.style.display = 'block';
+						moonIcon.style.display = 'none';
+					}
+					localStorage.setItem('theme', dark ? 'dark' : 'light');
+				}
+
+				function initTheme() {
+					var saved = localStorage.getItem('theme');
+					if (saved) {
+						updateTheme(saved === 'dark');
+					} else {
+						var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+						updateTheme(prefersDark);
+					}
+				}
+
+				themeToggle.addEventListener('click', function() {
+					var isDark = html.classList.contains('dark');
+					updateTheme(!isDark);
+				});
+
+				initTheme();
+			})();
+
+			var examples = [
+				{name: 'flowchart', code: 'flowchart TD\n    A([开始]) --> B{登录成功?}\n    B -->|是| C[显示首页]\n    B -->|否| D[显示错误]\n    C --> E([结束])\n    D --> E\n    \n    style A fill:#22c55e,stroke:#16a34a\n    style E fill:#3b82f6,stroke:#2563eb'},
+				{name: 'sequence', code: 'sequenceDiagram\n    participant U as 用户\n    participant S as 服务器\n    participant D as 数据库\n    U->>S: 提交请求\n    S->>D: 查询数据\n    D-->>S: 返回结果\n    S-->>U: 显示响应'},
+				{name: 'er', code: 'erDiagram\n    CUSTOMER ||--o{ ORDER : places\n    ORDER ||--|{ LINE-ITEM : contains\n    PRODUCT ||--o{ LINE-ITEM : "ordered in"\n    \n    CUSTOMER {\n        int id PK\n        string name\n        string email\n    }\n    \n    ORDER {\n        int id PK\n        date created\n        string status\n    }'}
+			];
+			var currentExample = 0;
+			function loadExample(index) {
+				currentExample = index;
+				var example = examples[index];
+				document.getElementById('code-display').textContent = example.code;
+				var encoded = btoa(unescape(encodeURIComponent(example.code)));
+				document.getElementById('preview-display').innerHTML = '<img src="https://mermaid.ink/img/' + encoded + '" alt="Diagram" style="max-width:100%;border-radius:8px;" onerror="this.parentElement.innerHTML=\'<p style=color:#888>加载失败</p>\'">';
+			}
+			function cycleExamples() {
+				currentExample = (currentExample + 1) % examples.length;
+				loadExample(currentExample);
+			}
+			document.addEventListener('DOMContentLoaded', function() {
+				loadExample(0);
+				setInterval(cycleExamples, 5000);
+			});
+		</script>
+
+		<style>
+			:is(.dark) header {
+				background-color: rgba(19,20,26,0.8) !important;
+			}
+		</style>
+	</body>
+</html>

@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f9fafb;
+  --bg-tertiary: #f3f4f6;
+  --bg-code: #f3f4f6;
+  --text-primary: #111827;
+  --text-secondary: #6b7280;
+  --border-color: #e5e7eb;
+  --hover-bg: #f3f4f6;
+  --card-bg: #ffffff;
+}
+
+.dark {
+  --bg-primary: #13141A;
+  --bg-secondary: #0F1015;
+  --bg-tertiary: #1E1F26;
+  --bg-code: #18191F;
+  --text-primary: #ffffff;
+  --text-secondary: #9ca3af;
+  --border-color: rgba(255, 255, 255, 0.1);
+  --hover-bg: #2a2b32;
+  --card-bg: #1E1F26;
+}
+
+* {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.bg-primary { background-color: var(--bg-primary) !important; }
+.bg-secondary { background-color: var(--bg-secondary) !important; }
+.bg-tertiary { background-color: var(--bg-tertiary) !important; }
+.bg-card { background-color: var(--card-bg) !important; }
+
+.text-primary { color: var(--text-primary) !important; }
+.text-secondary { color: var(--text-secondary) !important; }
+
+.border-custom { border-color: var(--border-color) !important; }
+.hover-bg:hover { background-color: var(--hover-bg) !important; }
+
+.code-bg { background-color: var(--bg-code) !important; }
+
+#preview-display img {
+  max-width: 100%;
+  border-radius: 8px;
+}
+
+.dark #preview-display img {
+  filter: brightness(0.9);
+}

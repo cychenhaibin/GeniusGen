@@ -1,0 +1,20 @@
+server:
+  port: "8080"
+  mode: "debug"
+
+database:
+  host: "localhost"
+  port: "5432"
+  user: "lawliet"
+  password: ""
+  dbname: "chart_generator"
+  sslmode: "disable"
+
+jwt:
+  secret: "your-secret-key-change-in-production"
+  expire_hour: 168
+
+minimax:
+  api_key: ""
+  base_url: "https://api.minimax.chat/v1"
+  model: "MiniMax-M2.5"
