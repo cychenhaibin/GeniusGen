@@ -3,10 +3,10 @@ server:
   mode: "debug"
 
 database:
-  host: "localhost"
+  host: "postgres"
   port: "5432"
   user: "lawliet"
-  password: ""
+  password: "chb20040728"
   dbname: "chart_generator"
   sslmode: "disable"
 

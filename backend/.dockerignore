@@ -1,12 +1,4 @@
-# Go
-*.test
+server
+*.log
 *.out
-vendor/
-
-# IDE
-.idea/
-.vscode/
-
-# Docker
-Dockerfile
-docker-compose.yml
+.DS_Store
