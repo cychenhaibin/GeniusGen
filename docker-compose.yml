@@ -2,42 +2,23 @@ version: '3.8'
 
 services:
   postgres:
-    image: postgres:15-alpine
-    container_name: chartgen-db
-    restart: unless-stopped
+    image: postgres:15
+    container_name: postgres-chart-gen
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: lawliet
+      POSTGRES_PASSWORD: yourpassword
       POSTGRES_DB: chart_generator
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U lawliet -d chart_generator"]
       interval: 10s
       timeout: 5s
       retries: 5
-
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: chartgen-backend
     restart: unless-stopped
-    ports:
-      - "8080:8080"
-    environment:
-      DB_HOST: postgres
-      DB_PORT: "5432"
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      DB_NAME: chart_generator
-      JWT_SECRET: chartgen-secret-key-2024
-      MINIMAX_API_KEY: ${MINIMAX_API_KEY:-}
-    depends_on:
-      postgres:
-        condition: service_healthy
 
 volumes:
-  postgres_data:
+  postgres-data:
+    driver: local

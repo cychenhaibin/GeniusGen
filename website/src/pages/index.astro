@@ -17,11 +17,13 @@ import '../styles/global.css';
 		<header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b border-custom transition-colors" style="background-color: rgba(255,255,255,0.8);">
 			<nav class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
 				<a href="/" class="flex items-center gap-3">
-					<div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background-color: #EE4D2D;">
-						<svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-							<path stroke-linecap="round" stroke-linejoin="round" d="M12 2L2 7l10 5 10-5-10-5z"/>
-							<path stroke-linecap="round" stroke-linejoin="round" d="M2 17l10 5 10-5"/>
-							<path stroke-linecap="round" stroke-linejoin="round" d="M2 12l10 5 10-5"/>
+					<div class="w-8 h-8 rounded-lg flex items-center justify-center bg-gradient-to-br from-[#EE4D2D] to-orange-400">
+						<svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+							<path d="M20 3v4"/>
+							<path d="M22 5h-4"/>
+							<path d="M4 17v2"/>
+							<path d="M5 18H3"/>
 						</svg>
 					</div>
 					<span class="text-lg font-bold text-primary">GeniusGen</span>
@@ -207,9 +209,9 @@ import '../styles/global.css';
 		<footer class="border-t py-8 px-6 border-custom">
 			<div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-secondary">
 				<div class="flex items-center gap-2">
-					<div class="w-6 h-6 rounded flex items-center justify-center" style="background-color: #EE4D2D;">
-						<svg class="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-							<path stroke-linecap="round" stroke-linejoin="round" d="M12 2L2 7l10 5 10-5-10-5z"/>
+					<div class="w-6 h-6 rounded flex items-center justify-center bg-gradient-to-br from-[#EE4D2D] to-orange-400">
+						<svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
 						</svg>
 					</div>
 					<span class="font-medium text-primary">GeniusGen</span>
@@ -219,6 +221,13 @@ import '../styles/global.css';
 			</div>
 		</footer>
 
+		<script type="module">
+			import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+			import elkLayouts from 'https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0/dist/mermaid-layout-elk.esm.min.mjs';
+
+			mermaid.registerLayoutLoaders(elkLayouts);
+			window.mermaid = mermaid;
+		</script>
 		<script is:inline>
 			(function() {
 				var html = document.documentElement;
@@ -260,26 +269,69 @@ import '../styles/global.css';
 			})();
 
 			var examples = [
-				{name: 'flowchart', code: 'flowchart TD\n    A([开始]) --> B{登录成功?}\n    B -->|是| C[显示首页]\n    B -->|否| D[显示错误]\n    C --> E([结束])\n    D --> E\n    \n    style A fill:#22c55e,stroke:#16a34a\n    style E fill:#3b82f6,stroke:#2563eb'},
-				{name: 'sequence', code: 'sequenceDiagram\n    participant U as 用户\n    participant S as 服务器\n    participant D as 数据库\n    U->>S: 提交请求\n    S->>D: 查询数据\n    D-->>S: 返回结果\n    S-->>U: 显示响应'},
-				{name: 'er', code: 'erDiagram\n    CUSTOMER ||--o{ ORDER : places\n    ORDER ||--|{ LINE-ITEM : contains\n    PRODUCT ||--o{ LINE-ITEM : "ordered in"\n    \n    CUSTOMER {\n        int id PK\n        string name\n        string email\n    }\n    \n    ORDER {\n        int id PK\n        date created\n        string status\n    }'}
+				{name: 'flowchart', code: '%%{init: {"theme":"neutral","flowchart":{"defaultRenderer":"elk"}}}%%\nflowchart TD\n    A([开始]) --> B{登录成功?}\n    B -->|是| C[显示首页]\n    B -->|否| D[显示错误]\n    C --> E([结束])\n    D --> E'},
+				{name: 'sequence', code: '%%{init: {"theme":"neutral"}}%%\nsequenceDiagram\n    participant U as 用户\n    participant S as 服务器\n    participant D as 数据库\n    U->>S: 提交请求\n    S->>D: 查询数据\n    D-->>S: 返回结果\n    S-->>U: 显示响应'},
+				{name: 'er', code: '%%{init: {"theme":"neutral"}}%%\nerDiagram\n    CUSTOMER ||--o{ ORDER : places\n    ORDER ||--|{ LINE-ITEM : contains\n    PRODUCT ||--o{ LINE-ITEM : "ordered in"\n    \n    CUSTOMER {\n        int id PK\n        string name\n        string email\n    }\n    \n    ORDER {\n        int id PK\n        date created\n        string status\n    }'}
 			];
 			var currentExample = 0;
-			function loadExample(index) {
+			var mermaidInitialized = false;
+
+			function initMermaid() {
+				if (typeof mermaid !== 'undefined' && !mermaidInitialized) {
+					mermaid.initialize({ 
+						startOnLoad: false,
+						theme: 'neutral',
+						securityLevel: 'loose',
+						flowchart: {
+							defaultRenderer: 'elk'
+						}
+					});
+					mermaidInitialized = true;
+				}
+			}
+
+			async function loadExample(index) {
 				currentExample = index;
 				var example = examples[index];
-				document.getElementById('code-display').textContent = example.code;
-				var encoded = btoa(unescape(encodeURIComponent(example.code)));
-				document.getElementById('preview-display').innerHTML = '<img src="https://mermaid.ink/img/' + encoded + '" alt="Diagram" style="max-width:100%;border-radius:8px;" onerror="this.parentElement.innerHTML=\'<p style=color:#888>加载失败</p>\'">';
+				var codeDisplay = document.getElementById('code-display');
+				var previewDisplay = document.getElementById('preview-display');
+				
+				codeDisplay.textContent = example.code;
+				previewDisplay.innerHTML = '<p style="color:#888">渲染中...</p>';
+
+				try {
+					initMermaid();
+					if (typeof mermaid === 'undefined') {
+						throw new Error('Mermaid not loaded');
+					}
+
+					var id = 'mermaid-' + Date.now();
+					var { svg } = await mermaid.render(id, example.code);
+					previewDisplay.innerHTML = svg;
+				} catch (error) {
+					console.error('Mermaid render error:', error);
+					previewDisplay.innerHTML = '<p style="color:#888">加载失败: ' + error.message + '</p>';
+				}
 			}
+
 			function cycleExamples() {
 				currentExample = (currentExample + 1) % examples.length;
 				loadExample(currentExample);
 			}
-			document.addEventListener('DOMContentLoaded', function() {
-				loadExample(0);
-				setInterval(cycleExamples, 5000);
-			});
+
+			if (document.readyState === 'loading') {
+				document.addEventListener('DOMContentLoaded', function() {
+					setTimeout(function() {
+						loadExample(0);
+						setInterval(cycleExamples, 5000);
+					}, 100);
+				});
+			} else {
+				setTimeout(function() {
+					loadExample(0);
+					setInterval(cycleExamples, 5000);
+				}, 100);
+			}
 		</script>
 
 		<style>

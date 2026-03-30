@@ -1,14 +1,26 @@
 import { useEffect, useRef, useState } from 'react'
 import mermaid from 'mermaid'
+import elkLayouts from '@mermaid-js/layout-elk'
 
-export type MermaidTheme = 'default' | 'dark' | 'neutral' | 'forest'
+export type MermaidTheme = 'default' | 'dark' | 'neutral' | 'forest' | 'base' | 'neo' | 'neo-dark' | 'mermaid-chart'
+export type MermaidLayout = 'dagre' | 'elk'
 
 interface MermaidPreviewProps {
   code: string
   theme?: MermaidTheme
+  layout?: MermaidLayout
 }
 
 const themeConfigs: Record<MermaidTheme, object> = {
+  'mermaid-chart': {
+    theme: 'base',
+  },
+  'neo': {
+    theme: 'base',
+  },
+  'neo-dark': {
+    theme: 'dark',
+  },
   default: {
     theme: 'default',
     primaryColor: '#EE4D2D',
@@ -43,21 +55,35 @@ const themeConfigs: Record<MermaidTheme, object> = {
     secondaryColor: '#ecfccb',
     tertiaryColor: '#d1fae5',
   },
+  base: {
+    theme: 'base',
+  },
 }
 
-export function MermaidPreview({ code, theme = 'default' }: MermaidPreviewProps) {
+export function MermaidPreview({ code, theme = 'default', layout = 'dagre' }: MermaidPreviewProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [svg, setSvg] = useState<string>('')
   const [error, setError] = useState<string>('')
+  const [elkRegistered, setElkRegistered] = useState(false)
+
+  useEffect(() => {
+    if (!elkRegistered) {
+      mermaid.registerLayoutLoaders(elkLayouts)
+      setElkRegistered(true)
+    }
+  }, [elkRegistered])
 
   useEffect(() => {
     mermaid.initialize({
       startOnLoad: false,
       securityLevel: 'loose',
       fontFamily: 'sans-serif',
+      flowchart: {
+        defaultRenderer: layout === 'elk' ? 'elk' : 'dagre-wrapper',
+      },
       ...themeConfigs[theme],
     })
-  }, [theme])
+  }, [theme, layout])
 
   useEffect(() => {
     const renderChart = async () => {
@@ -81,7 +107,7 @@ export function MermaidPreview({ code, theme = 'default' }: MermaidPreviewProps)
 
     const timeoutId = setTimeout(renderChart, 300)
     return () => clearTimeout(timeoutId)
-  }, [code, theme])
+  }, [code, theme, layout])
 
   if (error) {
     return (
@@ -106,8 +132,8 @@ export function MermaidPreview({ code, theme = 'default' }: MermaidPreviewProps)
 
   return (
     <div
+      id="mermaid-preview"
       ref={containerRef}
-      className="w-full h-full overflow-auto flex items-center justify-center"
       dangerouslySetInnerHTML={{ __html: svg }}
     />
   )

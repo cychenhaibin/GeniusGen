@@ -7,6 +7,9 @@ export default defineConfig({
     react(),
     tailwind()
   ],
+  devToolbar: {
+    enabled: false
+  },
   vite: {
     ssr: {
       noExternal: ['mermaid']

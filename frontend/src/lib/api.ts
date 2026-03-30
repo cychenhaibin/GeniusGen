@@ -73,9 +73,16 @@ export interface GenerateResponse {
   type: string
 }
 
+export interface AIConfig {
+  provider: string
+  apiKey: string
+  baseURL: string
+  model: string
+}
+
 export const chartApi = {
-  generate: (prompt: string, type?: string) =>
-    api.post<{ code: number; msg: string; data: GenerateResponse }>('/chart/generate', { prompt, type }),
+  generate: (prompt: string, type?: string, aiConfig?: AIConfig) =>
+    api.post<{ code: number; msg: string; data: GenerateResponse }>('/chart/generate', { prompt, type, aiConfig }),
 
   list: (page = 1, pageSize = 10) =>
     api.get<{ code: number; msg: string; data: ChartListResponse }>('/charts', {

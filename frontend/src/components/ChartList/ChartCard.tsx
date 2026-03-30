@@ -5,6 +5,7 @@ import { Chart } from '@/lib/api'
 import { Pencil, Trash2, Globe, Lock, Clock } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
 import mermaid from 'mermaid'
+import elkLayouts from '@mermaid-js/layout-elk'
 
 interface ChartCardProps {
   chart: Chart
@@ -15,6 +16,7 @@ interface ChartCardProps {
 export function ChartCard({ chart, onEdit, onDelete }: ChartCardProps) {
   const [svg, setSvg] = useState<string>('')
   const [error, setError] = useState<string>('')
+  const [elkRegistered, setElkRegistered] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
 
   const formatDate = (dateStr: string) => {
@@ -27,27 +29,61 @@ export function ChartCard({ chart, onEdit, onDelete }: ChartCardProps) {
   }
 
   useEffect(() => {
-    mermaid.initialize({
-      startOnLoad: false,
-      securityLevel: 'loose',
-      fontFamily: 'sans-serif',
-    })
+    if (!elkRegistered) {
+      try {
+        mermaid.registerLayoutLoaders(elkLayouts)
+        setElkRegistered(true)
+      } catch (err) {
+        console.warn('ELK layout already registered or failed to register:', err)
+        setElkRegistered(true)
+      }
+    }
+  }, [elkRegistered])
+
+  useEffect(() => {
+    if (!elkRegistered) return
 
     const renderChart = async () => {
+      if (!chart.content || !chart.content.trim()) {
+        console.error('Empty chart content for chart:', chart.id)
+        setError('内容为空')
+        return
+      }
+
       try {
-        const { svg: result } = await mermaid.render(`chart-${chart.id}`, chart.content)
+        const layoutMatch = chart.content.match(/layout:\s*(elk|dagre)/i)
+        const useElk = layoutMatch && layoutMatch[1].toLowerCase() === 'elk'
+        
+        const themeMatch = chart.content.match(/theme:\s*([\w-]+)/i)
+        const chartTheme = themeMatch ? themeMatch[1] : 'default'
+        
+        mermaid.initialize({
+          startOnLoad: false,
+          securityLevel: 'loose',
+          fontFamily: 'sans-serif',
+          theme: chartTheme,
+          flowchart: {
+            defaultRenderer: useElk ? 'elk' : 'dagre-wrapper',
+          },
+        })
+        
+        const uniqueId = `chart-${chart.id}-${Date.now()}`
+        const { svg: result } = await mermaid.render(uniqueId, chart.content)
+        
         setSvg(result)
         setError('')
       } catch (err: any) {
-        setError('渲染失败')
+        console.error('Mermaid render error for chart', chart.id, ':', err)
+        setError(`渲染失败`)
         setSvg('')
       }
     }
 
     if (chart.content) {
-      renderChart()
+      const timeoutId = setTimeout(renderChart, 100)
+      return () => clearTimeout(timeoutId)
     }
-  }, [chart.id, chart.content])
+  }, [chart.id, chart.content, elkRegistered])
 
   const handleCopy = () => {
     navigator.clipboard.writeText(chart.content)
@@ -74,13 +110,16 @@ export function ChartCard({ chart, onEdit, onDelete }: ChartCardProps) {
           </span>
         </div>
 
-        <div className="h-40 bg-muted/50 rounded-md mb-3 overflow-hidden flex items-center justify-center p-2">
+        <div className="h-40 bg-muted/50 rounded-md mb-3 flex items-center justify-center p-2 relative">
           {error ? (
-            <span className="text-xs text-destructive">{error}</span>
+            <div className="text-center">
+              <span className="text-xs text-destructive block">{error}</span>
+              <span className="text-xs text-muted-foreground mt-1 block">点击编辑查看完整图表</span>
+            </div>
           ) : svg ? (
             <div 
               ref={containerRef}
-              className="w-full h-full flex items-center justify-center [&_svg]:max-w-full [&_svg]:max-h-full"
+              className="chart-card-preview w-full h-full flex items-center justify-center overflow-hidden"
               dangerouslySetInnerHTML={{ __html: svg }}
             />
           ) : (

@@ -25,8 +25,16 @@ func NewAIService() *AIService {
 }
 
 type GenerateRequest struct {
-	Prompt string `json:"prompt"`
-	Type   string `json:"type,omitempty"`
+	Prompt   string    `json:"prompt"`
+	Type     string    `json:"type,omitempty"`
+	AIConfig *AIConfig `json:"aiConfig,omitempty"`
+}
+
+type AIConfig struct {
+	Provider string `json:"provider"`
+	APIKey   string `json:"apiKey"`
+	BaseURL  string `json:"baseURL"`
+	Model    string `json:"model"`
 }
 
 type GenerateResponse struct {
@@ -78,8 +86,25 @@ const systemPrompt = `你是一个图表生成专家。根据用户的描述，�
 6. flowchart 的节点文本可以使用中文，例如：flowchart TD\n    A[用户登录] --> B[验证密码]`
 
 func (s *AIService) Generate(req GenerateRequest) (*GenerateResponse, error) {
-	if config.AppConfig.Minimax.APIKey == "" {
-		return nil, errors.New("请配置 MINIMAX_API_KEY")
+	// 优先使用前端传递的配置,否则使用后端默认配置
+	apiKey := config.AppConfig.Minimax.APIKey
+	baseURL := config.AppConfig.Minimax.BaseURL
+	model := config.AppConfig.Minimax.Model
+
+	if req.AIConfig != nil {
+		if req.AIConfig.APIKey != "" {
+			apiKey = req.AIConfig.APIKey
+		}
+		if req.AIConfig.BaseURL != "" {
+			baseURL = req.AIConfig.BaseURL
+		}
+		if req.AIConfig.Model != "" {
+			model = req.AIConfig.Model
+		}
+	}
+
+	if apiKey == "" {
+		return nil, errors.New("请配置 API Key")
 	}
 
 	// 构建 prompt
@@ -89,7 +114,7 @@ func (s *AIService) Generate(req GenerateRequest) (*GenerateResponse, error) {
 	}
 
 	minimaxReq := MinimaxRequest{
-		Model:    config.AppConfig.Minimax.Model,
+		Model:    model,
 		Messages: []MinimaxMessage{
 			{Role: "system", Content: systemPrompt},
 			{Role: "user", Content: userPrompt},
@@ -99,7 +124,7 @@ func (s *AIService) Generate(req GenerateRequest) (*GenerateResponse, error) {
 	// 重试机制
 	var lastErr error
 	for i := 0; i < 3; i++ {
-		resp, err := s.callMinimax(minimaxReq)
+		resp, err := s.callMinimaxWithConfig(minimaxReq, apiKey, baseURL)
 		if err == nil {
 			return resp, nil
 		}
@@ -111,6 +136,10 @@ func (s *AIService) Generate(req GenerateRequest) (*GenerateResponse, error) {
 }
 
 func (s *AIService) callMinimax(req MinimaxRequest) (*GenerateResponse, error) {
+	return s.callMinimaxWithConfig(req, config.AppConfig.Minimax.APIKey, config.AppConfig.Minimax.BaseURL)
+}
+
+func (s *AIService) callMinimaxWithConfig(req MinimaxRequest, apiKey, baseURL string) (*GenerateResponse, error) {
 	jsonData, err := json.Marshal(req)
 	if err != nil {
 		return nil, err
@@ -118,7 +147,7 @@ func (s *AIService) callMinimax(req MinimaxRequest) (*GenerateResponse, error) {
 
 	httpReq, err := http.NewRequest(
 		"POST",
-		fmt.Sprintf("%s/text/chatcompletion_v2", config.AppConfig.Minimax.BaseURL),
+		fmt.Sprintf("%s/text/chatcompletion_v2", baseURL),
 		bytes.NewBuffer(jsonData),
 	)
 	if err != nil {
@@ -126,7 +155,7 @@ func (s *AIService) callMinimax(req MinimaxRequest) (*GenerateResponse, error) {
 	}
 
 	httpReq.Header.Set("Content-Type", "application/json")
-	httpReq.Header.Set("Authorization", fmt.Sprintf("Bearer %s", config.AppConfig.Minimax.APIKey))
+	httpReq.Header.Set("Authorization", fmt.Sprintf("Bearer %s", apiKey))
 
 	resp, err := s.client.Do(httpReq)
 	if err != nil {
